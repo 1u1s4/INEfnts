@@ -17,7 +17,7 @@ class Fuentes:
         
         # Utiliza un ProcessPoolExecutor para paralelizar las llamadas a la función boletas
         with ProcessPoolExecutor() as executor:
-            futures = {executor.submit(self.boletas, date.year, date.month, self.conexion): date for date in dates}
+            futures = {executor.submit(self.boletas, date.year, date.month): date for date in dates}
             
             # A medida que las llamadas a boletas se completan, guarda los resultados en dfs
             for future in as_completed(futures):
@@ -43,7 +43,7 @@ class Fuentes:
         # Llama a la función boletas para cada mes y guarda los resultados en dfs
         for date in dates:
             try:
-                df = self.boletas(date.year, date.month, self.conexion)
+                df = self.boletas(date.year, date.month)
                 dfs.append(df)
             except Exception as exc:
                 print(f'{date} generated an exception: {exc}')
