@@ -7,7 +7,6 @@ class Fuentes:
     def __init__(self, conexion) -> None:
         self.conexion = conexion
 
-
     def get_boletas(self, anio: int, mes: int) -> pd.DataFrame:
         dfs = []
 
