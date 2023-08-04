@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 setup(
     name='INEfnts',
-    version='0.1.1',
+    version='0.3',
     author='Luis Alfredo Alvarado Rodríguez',
     description='ETL para las fuentes del IPC/CBA.',
     long_description='',
