@@ -53,113 +53,78 @@ class Fuentes:
         return df_final
 
     def boletas(self, anio: int, mes: int) -> pd.DataFrame:
-            query = f"""
-    SELECT * FROM (SELECT CASE 
-        WHEN (H.ArtCod = 011110101 OR H.ArtCod = 011110102 OR H.ArtCod = 011110103) THEN 'ARROZ'
-        WHEN (H.ArtCod = 011120305) THEN 'AVENA'
-        WHEN (H.ArtCod = 011140102 OR H.ArtCod = 011140101 OR H.ArtCod = 011140103) THEN 'PASTAS ALIMENTICIAS'
-        WHEN (H.ArtCod = 011130102) THEN 'PAN DULCE CORRIENTE O DE MANTECA'
-        WHEN (H.ArtCod = 011130101) THEN 'PAN TIPO FRANCES'
-        WHEN (H.ArtCod = 011150101) THEN 'TORTILLA DE MAIZ'
-        WHEN (H.ArtCod  =011430103) THEN 'CREMA FRESCA'
-        WHEN (H.ArtCod = 011410101) THEN 'LECHE EN POLVO'
-        WHEN (H.ArtCod = 011410103 OR H.ArtCod = 011410102) THEN 'LECHE LIQUIDA'
-        WHEN (H.ArtCod = 011430101) THEN 'QUESO FRESCO'
-        WHEN (H.ArtCod = 011220103 OR H.ArtCod = 011220101) THEN 'CERDO SIN HUESO'
-        WHEN (H.ArtCod = 011230102 OR H.ArtCod = 011230103 OR H.ArtCod = 011230101) THEN 'POLLO'
-        WHEN (H.ArtCod = 011210105 OR H.ArtCod = 011210107) THEN 'CARNE DE RES CON HUESO'
-        WHEN (H.ArtCod = 011210102 OR H.ArtCod = 011210103 OR H.ArtCod = 011210101 OR H.ArtCod = 011210106 OR H.ArtCod = 011210104) THEN 'CARNE DE RES SIN HUESO'
-        WHEN (H.ArtCod = 011240101) THEN 'SALCHICHA'
-        WHEN (H.ArtCod = 011440101) THEN 'HUEVOS DE GALLINA'
-        WHEN (H.ArtCod = 011710802 OR H.ArtCod = 011710801) THEN 'FRIJOL NEGRO'
-        WHEN (H.ArtCod = 011810101) THEN 'AZUCAR BLANCA GRANULADA'
-        WHEN (H.ArtCod = 011520101) THEN 'ACEITE VEGETAL'
-        WHEN (H.ArtCod = 011610101) THEN 'AGUACATE'
-        WHEN (H.ArtCod = 011610201) THEN 'BANANO'
-        WHEN (H.ArtCod = 011610603) THEN 'PIÑA'
-        WHEN (H.ArtCod = 011610501) THEN 'PLATANOS'
-        WHEN (H.ArtCod = 011610605) THEN 'SANDIAS'
-        WHEN (H.ArtCod = 011711101) THEN 'CEBOLLA'
-        WHEN (H.ArtCod = 011710201) THEN 'GUISQUIL'
-        WHEN (H.ArtCod = 011712002) THEN 'HIERBAS FRESCAS'
-        WHEN (H.ArtCod = 011711201) THEN 'PAPA'
-        WHEN (H.ArtCod = 011710102 OR H.ArtCod = 011710101) THEN 'TOMATE'
-        WHEN (H.ArtCod = 012130101) THEN 'AGUAS GASEOSAS'
-        WHEN (H.ArtCod = 012110101 OR H.ArtCod = 012110201) THEN 'CAFÉ EN GRANO MOLIDO'
-        WHEN (H.ArtCod = 011120304) THEN 'INCAPARINA'
-        WHEN (H.ArtCod = 011910501) THEN 'SAL'
-        WHEN (H.ArtCod = 011930301) THEN 'SOPAS INSTANTANEAS VASO'
-        WHEN (H.ArtCod = 044210101) THEN 'GAS PROPANO'
-        WHEN (H.ArtCod = 072210101) THEN 'GASOLINA SUPERIOR'
-        WHEN (H.ArtCod = 072210201) THEN 'GASOLINA REGULAR'
-        WHEN (H.ArtCod = 072210301) THEN 'DIESEL'
-        ELSE 'No CBA'
-    END AS 'Canasta Básica', H.PerAno, H.PerMes, H.PerSem, H.ArtCod, H.BolNum, H.ArtPac, H.ArtPhi, H.UreCan, H.UraChi, H.UmeCan, H.ArtCR, H.ArtSI, H.RegCod, H.ArtNOm, H.ArtPrc, H.TfnCod, H.TfnNom, H.FntCod, H.FntNom, H.FntDir, H.DepCod, H.MunCod FROM 
-    (SELECT a.PerAno, a.PerMes, a.PerSem, a.ArtCod, b.BolNum, a.ArtPac, a.ArtPhi, a.UreCan, a.UraChi, d.UmeCan, a.ArtCR, a.ArtSI, b.RegCod, d.ArtNOm, d.ArtPrc, e.TfnCod, e.TfnNom, c.FntCod, c.FntNom, c.FntDir, b.DepCod, b.MunCod
-    FROM IPC2010_01_RN.dbo.IPC104 a 
-    INNER JOIN IPC2010_01_RN.dbo.IPC103 b ON (a.BolNum = b.BolNum AND a.PerAno = b.PerAno AND a.PerMes = b.PerMes AND a.PerSem = b.PerSem AND a.RegCod = b.RegCod)
-    INNER JOIN IPC2010_01_RN.dbo.IPC010 c ON (c.FntCod = b.FntCod AND c.DepCod = b.DepCod AND c.MunCod =b.MunCod)
-    INNER JOIN IPC2010_01_RN.dbo.IPC007 d ON a.ArtCod = d.ArtCod
-    INNER JOIN IPC2010_01_RN.dbo.IPC008 e ON c.TfnCod = e.TfnCod
-    WHERE a.ArtCod IN (SELECT DISTINCT ArtCod FROM IPC2010_01_RN.dbo.IPCPH6 WHERE PerAno = 2010 AND PerMes = 12 AND ArtCod != 091110301)
-    UNION ALL
-    SELECT a.PerAno, a.PerMes, a.PerSem, a.ArtCod, b.BolNum, a.ArtPac, a.ArtPhi, a.UreCan, a.UraChi, d.UmeCan, a.ArtCR, a.ArtSI, b.RegCod, d.ArtNOm, d.ArtPrc, e.TfnCod, e.TfnNom, c.FntCod, c.FntNom, c.FntDir, b.DepCod, b.MunCod
-    FROM IPC2010_02_RN.dbo.IPC104 a 
-    INNER JOIN IPC2010_02_RN.dbo.IPC103 b ON (a.BolNum = b.BolNum AND a.PerAno = b.PerAno AND a.PerMes = b.PerMes AND a.PerSem = b.PerSem  AND a.RegCod = b.RegCod)
-    INNER JOIN IPC2010_02_RN.dbo.IPC010 c ON (c.FntCod = b.FntCod AND c.DepCod = b.DepCod AND c.MunCod =b.MunCod)
-    INNER JOIN IPC2010_02_RN.dbo.IPC007 d ON a.ArtCod = d.ArtCod
-    INNER JOIN IPC2010_02_RN.dbo.IPC008 e ON c.TfnCod = e.TfnCod
-    WHERE a.ArtCod IN (SELECT DISTINCT ArtCod FROM IPC2010_01_RN.dbo.IPCPH6 WHERE PerAno = 2010 AND PerMes = 12 AND ArtCod != 091110301)
-    UNION ALL 
-    SELECT a.PerAno, a.PerMes, a.PerSem, a.ArtCod, b.BolNum, a.ArtPac, a.ArtPhi, a.UreCan, a.UraChi, d.UmeCan, a.ArtCR, a.ArtSI, b.RegCod, d.ArtNOm, d.ArtPrc, e.TfnCod, e.TfnNom, c.FntCod, c.FntNom, c.FntDir, b.DepCod, b.MunCod
-    FROM IPC2010_03_RN.dbo.IPC104 a 
-    INNER JOIN IPC2010_03_RN.dbo.IPC103 b ON (a.BolNum = b.BolNum AND a.PerAno = b.PerAno AND a.PerMes = b.PerMes AND a.PerSem = b.PerSem  AND a.RegCod = b.RegCod)
-    INNER JOIN IPC2010_03_RN.dbo.IPC010 c ON (c.FntCod = b.FntCod AND c.DepCod = b.DepCod AND c.MunCod =b.MunCod)
-    INNER JOIN IPC2010_03_RN.dbo.IPC007 d ON a.ArtCod = d.ArtCod
-    INNER JOIN IPC2010_03_RN.dbo.IPC008 e ON c.TfnCod = e.TfnCod
-    WHERE a.ArtCod IN (SELECT DISTINCT ArtCod FROM IPC2010_01_RN.dbo.IPCPH6 WHERE PerAno = 2010 AND PerMes = 12 AND ArtCod != 091110301)
-    UNION ALL 
-    SELECT a.PerAno, a.PerMes, a.PerSem, a.ArtCod, b.BolNum, a.ArtPac, a.ArtPhi, a.UreCan, a.UraChi, d.UmeCan, a.ArtCR, a.ArtSI, b.RegCod, d.ArtNOm, d.ArtPrc, e.TfnCod, e.TfnNom, c.FntCod, c.FntNom, c.FntDir, b.DepCod, b.MunCod
-    FROM IPC2010_04_RN.dbo.IPC104 a 
-    INNER JOIN IPC2010_04_RN.dbo.IPC103 b ON (a.BolNum = b.BolNum AND a.PerAno = b.PerAno AND a.PerMes = b.PerMes AND a.PerSem = b.PerSem  AND a.RegCod = b.RegCod)
-    INNER JOIN IPC2010_04_RN.dbo.IPC010 c ON (c.FntCod = b.FntCod AND c.DepCod = b.DepCod AND c.MunCod =b.MunCod)
-    INNER JOIN IPC2010_04_RN.dbo.IPC007 d ON a.ArtCod = d.ArtCod
-    INNER JOIN IPC2010_04_RN.dbo.IPC008 e ON c.TfnCod = e.TfnCod
-    WHERE a.ArtCod IN (SELECT DISTINCT ArtCod FROM IPC2010_01_RN.dbo.IPCPH6 WHERE PerAno = 2010 AND PerMes = 12 AND ArtCod != 091110301)
-    UNION ALL 
-    SELECT a.PerAno, a.PerMes, a.PerSem, a.ArtCod, b.BolNum, a.ArtPac, a.ArtPhi, a.UreCan, a.UraChi, d.UmeCan, a.ArtCR, a.ArtSI, b.RegCod, d.ArtNOm, d.ArtPrc, e.TfnCod, e.TfnNom, c.FntCod, c.FntNom, c.FntDir, b.DepCod, b.MunCod
-    FROM IPC2010_05_RN.dbo.IPC104 a 
-    INNER JOIN IPC2010_05_RN.dbo.IPC103 b ON (a.BolNum = b.BolNum AND a.PerAno = b.PerAno AND a.PerMes = b.PerMes AND a.PerSem = b.PerSem  AND a.RegCod = b.RegCod)
-    INNER JOIN IPC2010_05_RN.dbo.IPC010 c ON (c.FntCod = b.FntCod AND c.DepCod = b.DepCod AND c.MunCod =b.MunCod)
-    INNER JOIN IPC2010_05_RN.dbo.IPC007 d ON a.ArtCod = d.ArtCod
-    INNER JOIN IPC2010_05_RN.dbo.IPC008 e ON c.TfnCod = e.TfnCod
-    WHERE a.ArtCod IN (SELECT DISTINCT ArtCod FROM IPC2010_01_RN.dbo.IPCPH6 WHERE PerAno = 2010 AND PerMes = 12 AND ArtCod != 091110301)
-    UNION ALL 
-    SELECT a.PerAno, a.PerMes, a.PerSem, a.ArtCod, b.BolNum, a.ArtPac, a.ArtPhi, a.UreCan, a.UraChi, d.UmeCan, a.ArtCR, a.ArtSI, b.RegCod, d.ArtNOm, d.ArtPrc, e.TfnCod, e.TfnNom, c.FntCod, c.FntNom, c.FntDir, b.DepCod, b.MunCod
-    FROM IPC2010_06_RN.dbo.IPC104 a 
-    INNER JOIN IPC2010_06_RN.dbo.IPC103 b ON (a.BolNum = b.BolNum AND a.PerAno = b.PerAno AND a.PerMes = b.PerMes AND a.PerSem = b.PerSem  AND a.RegCod = b.RegCod)
-    INNER JOIN IPC2010_06_RN.dbo.IPC010 c ON (c.FntCod = b.FntCod AND c.DepCod = b.DepCod AND c.MunCod =b.MunCod)
-    INNER JOIN IPC2010_06_RN.dbo.IPC007 d ON a.ArtCod = d.ArtCod
-    INNER JOIN IPC2010_06_RN.dbo.IPC008 e ON c.TfnCod = e.TfnCod
-    WHERE a.ArtCod IN (SELECT DISTINCT ArtCod FROM IPC2010_01_RN.dbo.IPCPH6 WHERE PerAno = 2010 AND PerMes = 12 AND ArtCod != 091110301)
-    UNION ALL 
-    SELECT a.PerAno, a.PerMes, a.PerSem, a.ArtCod, b.BolNum, a.ArtPac, a.ArtPhi, a.UreCan, a.UraChi, d.UmeCan, a.ArtCR, a.ArtSI, b.RegCod, d.ArtNOm, d.ArtPrc, e.TfnCod, e.TfnNom, c.FntCod, c.FntNom, c.FntDir, b.DepCod, b.MunCod
-    FROM IPC2010_07_RN.dbo.IPC104 a 
-    INNER JOIN IPC2010_07_RN.dbo.IPC103 b ON (a.BolNum = b.BolNum AND a.PerAno = b.PerAno AND a.PerMes = b.PerMes AND a.PerSem = b.PerSem  AND a.RegCod = b.RegCod)
-    INNER JOIN IPC2010_07_RN.dbo.IPC010 c ON (c.FntCod = b.FntCod AND c.DepCod = b.DepCod AND c.MunCod =b.MunCod)
-    INNER JOIN IPC2010_07_RN.dbo.IPC007 d ON a.ArtCod = d.ArtCod
-    INNER JOIN IPC2010_07_RN.dbo.IPC008 e ON c.TfnCod = e.TfnCod
-    WHERE a.ArtCod IN (SELECT DISTINCT ArtCod FROM IPC2010_01_RN.dbo.IPCPH6 WHERE PerAno = 2010 AND PerMes = 12 AND ArtCod != 091110301)
-    UNION ALL 
-    SELECT a.PerAno, a.PerMes, a.PerSem, a.ArtCod, b.BolNum, a.ArtPac, a.ArtPhi, a.UreCan, a.UraChi, d.UmeCan, a.ArtCR, a.ArtSI, b.RegCod, d.ArtNOm, d.ArtPrc, e.TfnCod, e.TfnNom, c.FntCod, c.FntNom, c.FntDir, b.DepCod, b.MunCod
-    FROM IPC2010_08_RN.dbo.IPC104 a 
-    INNER JOIN IPC2010_08_RN.dbo.IPC103 b ON (a.BolNum = b.BolNum AND a.PerAno = b.PerAno AND a.PerMes = b.PerMes AND a.PerSem = b.PerSem  AND a.RegCod = b.RegCod)
-    INNER JOIN IPC2010_08_RN.dbo.IPC010 c ON (c.FntCod = b.FntCod AND c.DepCod = b.DepCod AND c.MunCod =b.MunCod)
-    INNER JOIN IPC2010_08_RN.dbo.IPC007 d ON a.ArtCod = d.ArtCod
-    INNER JOIN IPC2010_08_RN.dbo.IPC008 e ON c.TfnCod = e.TfnCod
-    WHERE a.ArtCod IN (SELECT DISTINCT ArtCod FROM IPC2010_01_RN.dbo.IPCPH6 WHERE PerAno = 2010 AND PerMes = 12 AND ArtCod != 091110301)) H
-    WHERE H.PerAno = {anio} AND H.PerMes = {mes}) J"""
-            df_Fnt = pd.read_sql(query, self.conexion)
-            columnas = ('RegCod', 'MunCod', 'DepCod', 'PerAno', 'PerMes')
-            df_Fnt = df_Fnt.astype(dict.fromkeys(columnas, "int64"), errors='ignore')
-            return df_Fnt
+        query = f"EXEC [dbo].[sp_get_precios_recolectados_mes] {anio}, {mes}"
+        df_Fnt = pd.read_sql(query, self.conexion)
+        nombres_estandar = {
+            'anio':                 'PerAno',
+            'mes':                  'PerMes',
+            'decada':               'PerSem',
+            'codigo_articulo':      'ArtCod',
+            'ine_poll_id':          'BolNum',
+            'precio_actual':        'ArtPac',
+            'precio_anterior':      'ArtPhi',
+            'cantidad_actual':      'UreCan',
+            'cantidad_anterior':    'UraChi',
+            'cantidad_base':        'UmeCan',
+            'nt_tipo':              'ArtCR',
+            'nt_tipo_nombre':       'ArtSI',
+            'region':               'RegCod',
+            'articulo':             'ArtNOm',
+            'periodicidad':         'ArtPrc',
+            'tp_source_type':       'TfnCod',
+            'fuente_tipo':          'TfnNom',
+            'fuente_codigo':        'FntCod',
+            'fuente_nombre':        'FntNom',
+            'fuente_direccion':     'FntDir',
+            'Codigo_Departamento':  'DepCod',
+            'Codigo_Municipio':     'MunCod'
+        }
+        df_Fnt = df_Fnt.rename(columns=nombres_estandar)
+        # IPC no necesita CBA, probalemente esta columna se usa en otro script.
+        # Por si acaso, la columna se incluye.
+        df_Fnt['Canasta Básica'] = 'No CBA'
+        mapeo_decada = {
+            'Primera década': 1,
+            'Segunda década': 2,
+            'Tercera década': 3
+        }
+        df_Fnt['PerSem'] = df_Fnt['PerSem'].replace(mapeo_decada)
+        df_Fnt['ArtCR'] = df_Fnt.ArtCR.map({351762: 'S'}).fillna('N')
+        df_Fnt['ArtSI'] = df_Fnt.ArtSI.map({'Sustitución Inmediata': 'S'}).fillna('N')
+        # Sustituir la periodicidad por números
+        mapeo_periodicidad = {
+            'Mensual':      1,
+            'Trimestral':   3,
+            'Semestral':    6,
+            'Anual':        12
+        }
+        df_Fnt['ArtPrc'] = df_Fnt.ArtPrc.map(mapeo_periodicidad)
+        orden_columnas = [
+            'Canasta Básica',
+            'PerAno', 
+            'PerMes',
+            'PerSem',
+            'ArtCod',
+            'BolNum',
+            'ArtPac',
+            'ArtPhi',
+            'UreCan',
+            'UraChi',
+            'UmeCan',
+            'ArtCR',
+            'ArtSI',
+            'RegCod',
+            'ArtNOm',
+            'ArtPrc',
+            'TfnCod',
+            'TfnNom',
+            'FntCod',
+            'FntNom',
+            'FntDir',
+            'DepCod',
+            'MunCod'
+        ]
+        df_Fnt = df_Fnt[orden_columnas]
+        columnas = ('RegCod', 'MunCod', 'DepCod', 'PerAno', 'PerMes')
+        df_Fnt = df_Fnt.astype(dict.fromkeys(columnas, "int64"), errors='ignore')
+        return df_Fnt
