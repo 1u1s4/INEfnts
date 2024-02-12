@@ -55,6 +55,7 @@ class Fuentes:
     def boletas(self, anio: int, mes: int) -> pd.DataFrame:
         query = f"EXEC [dbo].[sp_get_precios_recolectados_mes] {anio}, {mes}"
         df_Fnt = pd.read_sql(query, self.conexion)
+        df = df[df['tipo_precio'] == 'IPC-2023']
         nombres_estandar = {
             'anio':                 'PerAno',
             'mes':                  'PerMes',
