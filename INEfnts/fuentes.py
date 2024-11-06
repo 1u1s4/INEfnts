@@ -55,7 +55,12 @@ class Fuentes:
     def boletas(self, anio: int, mes: int) -> pd.DataFrame:
         query = f"EXEC [dbo].[sp_get_precios_recolectados_mes] {anio}, {mes}"
         df_Fnt = pd.read_sql(query, self.conexion)
-        df = df[df['tipo_precio'] == 'IPC-2023']
+        df_Fnt = df_Fnt[df_Fnt['tipo_precio'] == 'IPC-2023']
+
+        if (anio > 2024 or (anio == 2024 and mes > 9) ):
+            df_Fnt = df_Fnt[df_Fnt['estado_fuente'] == 'Activo']
+
+        df_Fnt = df_Fnt[df_Fnt['nt_tipo_nombre'] != 'Periodo de espera']
         nombres_estandar = {
             'anio':                 'PerAno',
             'mes':                  'PerMes',
