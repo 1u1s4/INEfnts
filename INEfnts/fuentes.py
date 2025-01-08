@@ -57,7 +57,7 @@ class Fuentes:
         df_Fnt = pd.read_sql(query, self.conexion)
         df_Fnt = df_Fnt[df_Fnt['tipo_precio'] == 'IPC-2023']
 
-        if (anio > 2024 or (anio == 2024 and mes > 9) ):
+        if anio == 2024 and mes == 10:
             df_Fnt = df_Fnt[df_Fnt['estado_fuente'] == 'Activo']
 
         df_Fnt = df_Fnt[df_Fnt['nt_tipo_nombre'] != 'Periodo de espera']
