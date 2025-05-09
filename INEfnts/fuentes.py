@@ -37,7 +37,8 @@ class Fuentes:
 
         # Genera una lista de los últimos 12 meses
         start_date = datetime.date(anio, mes, 1)
-        dates = [start_date - relativedelta(months=i) for i in range(13)]
+        #dates = [start_date - relativedelta(months=i) for i in range(13)]
+        dates = [start_date - relativedelta(months=i) for i in range(1)]
         
         # Llama a la función boletas para cada mes y guarda los resultados en dfs
         for date in dates:
